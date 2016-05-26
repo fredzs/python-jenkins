@@ -25,12 +25,17 @@ def download(key, config):
   # else:
     print(filePath + u'路径不存在，自动新建。')
     os.makedirs(filePath)
-  output = open(filePath + "\\config.xml", "wb+")
+  output = open(filePath + "\\oldConfig.xml", "wb+")
   output.write(config)
 
+def saveNewConfigFile(key, newConfig):
+  filePath = homedir + '\\configFiles\\'  + key
+  output = open(filePath + "\\newConfig.xml", "wb+")
+  output.write(newConfig)
+  
 def test():
-  key = 'benmu-health-img-maven'
-  #j = server.get_job('bjmcManagerFE_beta')
+  key = 'benmu-test'
+  #j = server.get_job('bjmcManagerFE_beta，benmu-health-img-maven')
   j = server.get_job(key)
   c = j.get_config()
   newC = re.search(r"<stableText>.*</stableText>", c, flags=re.DOTALL)
@@ -40,8 +45,8 @@ def test():
   else:
     newC = re.sub(r"<stableText>.*</stableText>","<stableText>" + editScript + "</stableText>", c,0,flags=re.DOTALL)
   print(u'--更新  \"http://172.16.100.150:8085/job/' + key + '/config.xml\" 成功!')
-  print(newC)
-  #j.update_config(newC)
+  #print(newC)
+  j.update_config(newC)
   
 
 def main():
@@ -53,6 +58,7 @@ def main():
     job = server.get_job(key)
     config = job.get_config()
     print('---------------------------------------------------------------------');
+    # 下载并保存旧的config.xml文件
     download(key, config);
     
     search = re.search(r"<stableText>.*</stableText>", config, flags=re.DOTALL)
@@ -64,7 +70,13 @@ def main():
     else:
       newConfig = re.sub(r"<stableText>.*</stableText>","<stableText>" + editScript + "</stableText>", config, 0, flags=re.DOTALL)
       count = count + 1
-      #job.update_config(newConfig)
+      
+      # 下面这句是向jenkins刷新config文件，不可撤销，谨慎操作！
+      job.update_config(newConfig)
+      
+      # 保存修改后的config.xml文件，便于对比修改是否正确
+      saveNewConfigFile(key, newConfig)
+      
       print(str(total) + u' : 更新 ' + jobUrl + u'/config.xml 成功!')
   print('---------------------------------------------------------------------');
   print(u'共有' + str(count) + u'个job更新了配置。')

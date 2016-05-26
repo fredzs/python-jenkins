@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?><maven2-moduleset plugin="maven-plugin@2.7.1">
+  <actions/>
+  <description/>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.25">
+      <autoRebuild>false</autoRebuild>
+      <rebuildDisabled>false</rebuildDisabled>
+    </com.sonyericsson.rebuild.RebuildSettings>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>7</daysToKeep>
+        <numToKeep>10</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>base_git_url</name>
+          <description/>
+          <defaultValue>http://git.benmu-health.org/benmu-health/rpc-parent.git</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>branch_name</name>
+          <description/>
+          <defaultValue>dev_20151209_hisAdapter</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.4.0">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>${base_git_url}</url>
+        <credentialsId>c7a74331-bde1-4b97-b298-51686095172e</credentialsId>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>*/${branch_name}</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions/>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <rootModule>
+    <groupId>com.benmu.platform</groupId>
+    <artifactId>rpc-parent</artifactId>
+  </rootModule>
+  <goals>clean package -Pbenmu1  dependency:tree -Dverbose</goals>
+  <aggregatorStyleBuild>true</aggregatorStyleBuild>
+  <incrementalBuild>false</incrementalBuild>
+  <ignoreUpstremChanges>true</ignoreUpstremChanges>
+  <archivingDisabled>false</archivingDisabled>
+  <siteArchivingDisabled>false</siteArchivingDisabled>
+  <fingerprintingDisabled>false</fingerprintingDisabled>
+  <resolveDependencies>false</resolveDependencies>
+  <processPlugins>false</processPlugins>
+  <mavenValidationLevel>-1</mavenValidationLevel>
+  <runHeadless>false</runHeadless>
+  <disableTriggerDownstreamProjects>false</disableTriggerDownstreamProjects>
+  <blockTriggerWhenBuilding>true</blockTriggerWhenBuilding>
+  <settings class="jenkins.mvn.DefaultSettingsProvider"/>
+  <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+  <reporters/>
+  <publishers>
+    <org.korosoft.jenkins.plugin.rtp.RichTextPublisher plugin="rich-text-publisher-plugin@1.3">
+      <stableText>&lt;script&gt;
+var list=document.getElementsByTagName(&quot;tbody&quot;)[1];
+var length = list.getElementsByTagName(&quot;tr&quot;).length - 3;
+var startLine = 2;
+var i = 0;
+
+var buildId = ${ENV:BUILD_ID};
+var buildIdInt = parseInt(buildId);
+function callServer() {	
+	var xmlHttp;
+	if(window.ActiveXObject)
+        xmlHttp =new ActiveXObject(&quot;Microsoft.XMLHTTP&quot;);
+    else if(window.XMLHttpRequest)   
+        xmlHttp=new XMLHttpRequest();   
+	var baseUrl = document.URL
+    var url = baseUrl.substring(0, baseUrl.lastIndexOf(&quot;/&quot;) + 1) + buildIdInt + &quot;/api/xml?pretty=true&amp;tree=actions[parameters[*],causes[*]]&quot;;
+	
+	xmlHttp.open(&quot;GET&quot;,url,true);   
+	xmlHttp.onreadystatechange = function(){
+		if(xmlHttp.readyState==4 &amp;&amp; xmlHttp.status==200 &amp;&amp; i &lt; length) {
+			var branch_name, SSH_PUBLISHERS, user_name;
+			var para = xmlHttp.responseXML.getElementsByTagName(&quot;parameter&quot;);
+			var varCount = para.length;
+			var found = 0;
+			for (var j = 0; j &lt; varCount; j++)
+			{
+				var name = para[j].getElementsByTagName(&quot;name&quot;)[0].firstChild.nodeValue;
+				if (name == &quot;branch_name&quot;)
+				{
+					branch_name = para[j].getElementsByTagName(&quot;value&quot;)[0].firstChild.nodeValue;
+				}
+				else if (name == &quot;SSH_PUBLISHERS&quot;)
+				{
+					found = 1;
+					SSH_PUBLISHERS = para[j].getElementsByTagName(&quot;value&quot;)[0].firstChild.nodeValue;
+				}
+			}
+			user_name = xmlHttp.responseXML.getElementsByTagName(&quot;cause&quot;)[0].getElementsByTagName(&quot;userName&quot;)[0].firstChild.nodeValue;
+			var lineContent1 = &quot;&quot;, lineContent2 = &quot;&quot;, lineContent3 = &quot;&quot;;
+			if(branch_name == &quot;trunk&quot;) {
+				lineContent1 = &quot;　　trunk发布&quot;;
+			}
+			else {
+				lineContent1 = &quot;　　branch_name=&quot; + branch_name
+				lineContent2 = &quot;　　btag=b_&quot; + buildIdInt + &quot;_&quot; + user_name;
+			}
+
+			buildIdInt--;
+			var newTd=document.createElement(&quot;TD&quot;);
+
+			var textnode1 =document.createTextNode(lineContent1);
+			var newDiv1=document.createElement(&quot;DIV&quot;);
+			newDiv1.appendChild(textnode1);
+			newTd.appendChild(newDiv1);
+
+			var textnode2 =document.createTextNode(lineContent2);
+			var newDiv2=document.createElement(&quot;DIV&quot;);
+			newDiv2.appendChild(textnode2);
+			newTd.appendChild(newDiv2);
+
+			if (found == 1)
+			{
+				lineContent3 = &quot;　　SSH_PUBLISHERS=&quot; + SSH_PUBLISHERS;
+				var textnode3 =document.createTextNode(lineContent3);
+				var newDiv3=document.createElement(&quot;DIV&quot;);
+				newDiv3.appendChild(textnode3);
+				newTd.appendChild(newDiv3);
+			}
+
+			var textnode4 =document.createTextNode(&quot;　&quot;);
+			var newDiv4=document.createElement(&quot;DIV&quot;);
+			newDiv4.appendChild(textnode4);
+			newTd.appendChild(newDiv4);
+			
+			var newTr=document.createElement(&quot;TR&quot;);
+			newTr.appendChild(newTd);
+			list.insertBefore(newTr,list.children[i*2 + startLine]);
+			i++;
+			callServer();
+		}
+	};
+	xmlHttp.send(null);   
+}
+callServer();
+
+&lt;/script&gt;</stableText>
+      <unstableText/>
+      <failedText/>
+      <unstableAsStable>true</unstableAsStable>
+      <failedAsStable>true</failedAsStable>
+      <parserName>HTML</parserName>
+    </org.korosoft.jenkins.plugin.rtp.RichTextPublisher>
+  </publishers>
+  <buildWrappers>
+    <org.jenkinsci.plugins.builduser.BuildUser plugin="build-user-vars-plugin@1.4"/>
+  </buildWrappers>
+  <prebuilders/>
+  <postbuilders>
+    <jenkins.plugins.publish__over__ssh.BapSshBuilderPlugin plugin="publish-over-ssh@1.12">
+      <delegate>
+        <consolePrefix>SSH: </consolePrefix>
+        <delegate>
+          <publishers>
+            <jenkins.plugins.publish__over__ssh.BapSshPublisher>
+              <configName>rpc_beta</configName>
+              <verbose>false</verbose>
+              <transfers>
+                <jenkins.plugins.publish__over__ssh.BapSshTransfer>
+                  <remoteDirectory>/export/App</remoteDirectory>
+                  <sourceFiles>operateService/target/operateService-assembly.tar.gz</sourceFiles>
+                  <excludes/>
+                  <removePrefix>operateService/target</removePrefix>
+                  <remoteDirectorySDF>false</remoteDirectorySDF>
+                  <flatten>false</flatten>
+                  <cleanRemote>false</cleanRemote>
+                  <noDefaultExcludes>false</noDefaultExcludes>
+                  <makeEmptyDirs>false</makeEmptyDirs>
+                  <patternSeparator>[, ]+</patternSeparator>
+                  <execCommand>/usr/local/shell/restartServer.sh operateService</execCommand>
+                  <execTimeout>120000</execTimeout>
+                  <usePty>false</usePty>
+                </jenkins.plugins.publish__over__ssh.BapSshTransfer>
+              </transfers>
+              <useWorkspaceInPromotion>false</useWorkspaceInPromotion>
+              <usePromotionTimestamp>false</usePromotionTimestamp>
+            </jenkins.plugins.publish__over__ssh.BapSshPublisher>
+          </publishers>
+          <continueOnError>false</continueOnError>
+          <failOnError>false</failOnError>
+          <alwaysPublishFromMaster>false</alwaysPublishFromMaster>
+          <hostConfigurationAccess class="jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin" reference="../.."/>
+        </delegate>
+      </delegate>
+    </jenkins.plugins.publish__over__ssh.BapSshBuilderPlugin>
+  </postbuilders>
+  <runPostStepsIfResult>
+    <name>SUCCESS</name>
+    <ordinal>0</ordinal>
+    <color>BLUE</color>
+    <completeBuild>true</completeBuild>
+  </runPostStepsIfResult>
+</maven2-moduleset>

@@ -1,0 +1,351 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<maven2-moduleset plugin="maven-plugin@2.7.1">
+  <actions/>
+  <description>&#xd;
+</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.25">
+      <autoRebuild>false</autoRebuild>
+      <rebuildDisabled>false</rebuildDisabled>
+    </com.sonyericsson.rebuild.RebuildSettings>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>7</daysToKeep>
+        <numToKeep>20</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>base_git_url</name>
+          <description>git url</description>
+          <defaultValue>http://git.benmu-health.org/fesite/m-benmu-health-site.git</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>branch_name</name>
+          <description>要输入要发布的分支</description>
+          <defaultValue>master</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>jscssProject</name>
+          <description>要关联的 js css工程名，这个除非变更 不需要修改</description>
+          <defaultValue>m-benmu-health</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>jsCssHost</name>
+          <description></description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>//fetest1.benmu-health.org/m-benmu-health</string>
+              <string>//fetest2.benmu-health.org/m-benmu-health</string>
+              <string>//fetest3.benmu-health.org/m-benmu-health</string>
+              <string>//fedev.benmu-health.com/m-benmu-health</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>SSH_PUBLISHERS</name>
+          <description>选择测试机器</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>beta3</string>
+              <string>beta2</string>
+              <string>beta1</string>
+              <string>dev</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.4.0">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>${base_git_url}</url>
+        <credentialsId>c7a74331-bde1-4b97-b298-51686095172e</credentialsId>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>*/master</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions/>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <rootModule>
+    <groupId>com.saohuobang.web.platform</groupId>
+    <artifactId>m-benmu-health-site</artifactId>
+  </rootModule>
+  <aggregatorStyleBuild>true</aggregatorStyleBuild>
+  <incrementalBuild>false</incrementalBuild>
+  <ignoreUpstremChanges>false</ignoreUpstremChanges>
+  <archivingDisabled>false</archivingDisabled>
+  <siteArchivingDisabled>false</siteArchivingDisabled>
+  <fingerprintingDisabled>false</fingerprintingDisabled>
+  <resolveDependencies>false</resolveDependencies>
+  <processPlugins>false</processPlugins>
+  <mavenValidationLevel>-1</mavenValidationLevel>
+  <runHeadless>false</runHeadless>
+  <disableTriggerDownstreamProjects>false</disableTriggerDownstreamProjects>
+  <blockTriggerWhenBuilding>true</blockTriggerWhenBuilding>
+  <settings class="jenkins.mvn.DefaultSettingsProvider"/>
+  <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+  <reporters/>
+  <publishers>
+    <org.korosoft.jenkins.plugin.rtp.RichTextPublisher plugin="rich-text-publisher-plugin@1.3">
+      <stableText>&lt;script&gt;
+var list=document.getElementsByTagName(&quot;tbody&quot;)[1];
+var length = list.getElementsByTagName(&quot;tr&quot;).length - 3;
+var startLine = 2;
+var i = 0;
+
+var buildId = ${ENV:BUILD_ID};
+var buildIdInt = parseInt(buildId);
+function callServer() {	
+	var xmlHttp;
+	if(window.ActiveXObject)
+        xmlHttp =new ActiveXObject(&quot;Microsoft.XMLHTTP&quot;);
+    else if(window.XMLHttpRequest)   
+        xmlHttp=new XMLHttpRequest();   
+	var url = document.URL + buildIdInt + &quot;/api/xml?pretty=true&amp;tree=actions[parameters[*],causes[*]]&quot;;
+	
+	xmlHttp.open(&quot;GET&quot;,url,true);   
+	xmlHttp.onreadystatechange = function(){
+		if(xmlHttp.readyState==4 &amp;&amp; xmlHttp.status==200 &amp;&amp; i &lt; length) {
+			var branch_name = xmlHttp.responseXML.getElementsByTagName(&quot;parameter&quot;)[1].getElementsByTagName(&quot;value&quot;)[0].firstChild.nodeValue;
+			var user_name = xmlHttp.responseXML.getElementsByTagName(&quot;cause&quot;)[0].getElementsByTagName(&quot;userName&quot;)[0].firstChild.nodeValue;
+			var lineContent1, lineContent2;
+			if(branch_name==&quot;trunk&quot;) {
+				lineContent1 = &quot;　　trunk发布&quot;;
+				lineContent2 = &quot;&quot;
+			}
+			else {
+				lineContent1 = &quot;　　branch_name=&quot; + branch_name
+				lineContent2 = &quot;　　btag=b_&quot; + buildIdInt + &quot;_&quot; + user_name;
+			}
+			buildIdInt--;
+			var textnode1 =document.createTextNode(lineContent1);
+			var textnode2 =document.createTextNode(lineContent2);
+			var textnode3 =document.createTextNode(&quot;　&quot;);
+			var newDiv1=document.createElement(&quot;DIV&quot;);
+			var newDiv2=document.createElement(&quot;DIV&quot;);
+			var newDiv3=document.createElement(&quot;DIV&quot;);
+			newDiv1.appendChild(textnode1);
+			newDiv2.appendChild(textnode2);
+			newDiv3.appendChild(textnode3);
+			var newTd=document.createElement(&quot;TD&quot;);
+			newTd.appendChild(newDiv1);
+			newTd.appendChild(newDiv2);
+			newTd.appendChild(newDiv3);
+			
+			var newTr=document.createElement(&quot;TR&quot;);
+			newTr.appendChild(newTd);
+			list.insertBefore(newTr,list.children[i*2 + startLine]);
+			i++;
+			callServer();
+		}
+	};
+	xmlHttp.send(null);   
+}
+callServer();
+
+&lt;/script&gt;</stableText>
+      <unstableText></unstableText>
+      <failedText></failedText>
+      <unstableAsStable>true</unstableAsStable>
+      <failedAsStable>true</failedAsStable>
+      <parserName>HTML</parserName>
+    </org.korosoft.jenkins.plugin.rtp.RichTextPublisher>
+  </publishers>
+  <buildWrappers>
+    <org.jenkinsci.plugins.builduser.BuildUser plugin="build-user-vars-plugin@1.4"/>
+  </buildWrappers>
+  <prebuilders>
+    <hudson.tasks.Shell>
+      <command>branchMd5=`git rev-parse origin/${branch_name}`
+git checkout ${branchMd5}
+if [ `echo ${branch_name}|egrep &apos;btag-|rtag-&apos;` ]
+then 
+    tag=${branch_name}
+else
+    baseVer=`git rev-parse origin/master`
+    diffVer=`git merge-base origin/${branch_name} origin/master`
+    if [ ${baseVer} != ${diffVer} ]
+    then 
+        echo &quot;error: ${branch_name} is out of date!!!please merge from master！&quot;
+        exit 1;
+    fi
+    userName=`curl -silent ${BUILD_URL}api/json|grep -iEo &apos;userName\&quot;:\&quot;\w*&apos;`
+    userName=${userName/userName\&quot;\:\&quot;/}
+    tag=&quot;btag-&quot;${userName}&quot;-&quot;${BUILD_TIMESTAMP}
+    git tag ${tag}
+    git push origin --tags
+fi
+
+cd /root/.jenkins/jobs/${JOB_NAME}/workspace 
+rm -rf  *.tar.gz
+rm -rf ver/
+mkdir ver
+cp -rf /root/.jenkins/jobs/${jscssProject}/workspace/ver/* ./ver/
+echo -n &quot;${jsCssHost}&quot; &gt; jsCssHost
+tar -zcvf ${JOB_NAME}.tar.gz ./*  --exclude=target
+echo &quot;pack finished&quot;</command>
+    </hudson.tasks.Shell>
+  </prebuilders>
+  <postbuilders>
+    <jenkins.plugins.publish__over__ssh.BapSshBuilderPlugin plugin="publish-over-ssh@1.12">
+      <delegate>
+        <consolePrefix>SSH: </consolePrefix>
+        <delegate>
+          <publishers>
+            <jenkins.plugins.publish__over__ssh.BapSshPublisher>
+              <configName>测试3</configName>
+              <verbose>false</verbose>
+              <transfers>
+                <jenkins.plugins.publish__over__ssh.BapSshTransfer>
+                  <remoteDirectory>/export/fesite/${JOB_NAME}</remoteDirectory>
+                  <sourceFiles>**/*.tar.gz</sourceFiles>
+                  <excludes></excludes>
+                  <removePrefix></removePrefix>
+                  <remoteDirectorySDF>false</remoteDirectorySDF>
+                  <flatten>false</flatten>
+                  <cleanRemote>false</cleanRemote>
+                  <noDefaultExcludes>false</noDefaultExcludes>
+                  <makeEmptyDirs>false</makeEmptyDirs>
+                  <patternSeparator>[, ]+</patternSeparator>
+                  <execCommand>rm -rf  /export/fesite/${JOB_NAME}/*
+mv /root/export/fesite/${JOB_NAME}/*.tar.gz /export/fesite/${JOB_NAME}
+cd  /export/fesite/${JOB_NAME}/
+tar -zxvf ${JOB_NAME}.tar.gz
+rm -rf *.tar.gz</execCommand>
+                  <execTimeout>120000</execTimeout>
+                  <usePty>false</usePty>
+                </jenkins.plugins.publish__over__ssh.BapSshTransfer>
+              </transfers>
+              <useWorkspaceInPromotion>false</useWorkspaceInPromotion>
+              <usePromotionTimestamp>false</usePromotionTimestamp>
+              <label class="jenkins.plugins.publish_over_ssh.BapSshPublisherLabel">
+                <label>beta3</label>
+              </label>
+            </jenkins.plugins.publish__over__ssh.BapSshPublisher>
+            <jenkins.plugins.publish__over__ssh.BapSshPublisher>
+              <configName>测试2</configName>
+              <verbose>false</verbose>
+              <transfers>
+                <jenkins.plugins.publish__over__ssh.BapSshTransfer>
+                  <remoteDirectory>/export/fesite/${JOB_NAME}</remoteDirectory>
+                  <sourceFiles>**/*.tar.gz</sourceFiles>
+                  <excludes></excludes>
+                  <removePrefix></removePrefix>
+                  <remoteDirectorySDF>false</remoteDirectorySDF>
+                  <flatten>false</flatten>
+                  <cleanRemote>false</cleanRemote>
+                  <noDefaultExcludes>false</noDefaultExcludes>
+                  <makeEmptyDirs>false</makeEmptyDirs>
+                  <patternSeparator>[, ]+</patternSeparator>
+                  <execCommand>rm -rf  /export/fesite/${JOB_NAME}/*
+mv /root/export/fesite/${JOB_NAME}/*.tar.gz /export/fesite/${JOB_NAME}
+cd  /export/fesite/${JOB_NAME}/
+tar -zxvf ${JOB_NAME}.tar.gz
+rm -rf *.tar.gz</execCommand>
+                  <execTimeout>120000</execTimeout>
+                  <usePty>false</usePty>
+                </jenkins.plugins.publish__over__ssh.BapSshTransfer>
+              </transfers>
+              <useWorkspaceInPromotion>false</useWorkspaceInPromotion>
+              <usePromotionTimestamp>false</usePromotionTimestamp>
+              <label class="jenkins.plugins.publish_over_ssh.BapSshPublisherLabel">
+                <label>beta2</label>
+              </label>
+            </jenkins.plugins.publish__over__ssh.BapSshPublisher>
+            <jenkins.plugins.publish__over__ssh.BapSshPublisher>
+              <configName>rpc_beta</configName>
+              <verbose>false</verbose>
+              <transfers>
+                <jenkins.plugins.publish__over__ssh.BapSshTransfer>
+                  <remoteDirectory>/export/fesite/${JOB_NAME}</remoteDirectory>
+                  <sourceFiles>**/*.tar.gz</sourceFiles>
+                  <excludes></excludes>
+                  <removePrefix></removePrefix>
+                  <remoteDirectorySDF>false</remoteDirectorySDF>
+                  <flatten>false</flatten>
+                  <cleanRemote>false</cleanRemote>
+                  <noDefaultExcludes>false</noDefaultExcludes>
+                  <makeEmptyDirs>false</makeEmptyDirs>
+                  <patternSeparator>[, ]+</patternSeparator>
+                  <execCommand>rm -rf  /export/fesite/${JOB_NAME}/*
+mv /root/export/fesite/${JOB_NAME}/*.tar.gz /export/fesite/${JOB_NAME}
+cd  /export/fesite/${JOB_NAME}/
+tar -zxvf ${JOB_NAME}.tar.gz
+rm -rf *.tar.gz</execCommand>
+                  <execTimeout>120000</execTimeout>
+                  <usePty>false</usePty>
+                </jenkins.plugins.publish__over__ssh.BapSshTransfer>
+              </transfers>
+              <useWorkspaceInPromotion>false</useWorkspaceInPromotion>
+              <usePromotionTimestamp>false</usePromotionTimestamp>
+              <label class="jenkins.plugins.publish_over_ssh.BapSshPublisherLabel">
+                <label>beta1</label>
+              </label>
+            </jenkins.plugins.publish__over__ssh.BapSshPublisher>
+            <jenkins.plugins.publish__over__ssh.BapSshPublisher>
+              <configName>rpc_dev</configName>
+              <verbose>false</verbose>
+              <transfers>
+                <jenkins.plugins.publish__over__ssh.BapSshTransfer>
+                  <remoteDirectory>/export/fesite/${JOB_NAME}</remoteDirectory>
+                  <sourceFiles>**/*.tar.gz</sourceFiles>
+                  <excludes></excludes>
+                  <removePrefix></removePrefix>
+                  <remoteDirectorySDF>false</remoteDirectorySDF>
+                  <flatten>false</flatten>
+                  <cleanRemote>false</cleanRemote>
+                  <noDefaultExcludes>false</noDefaultExcludes>
+                  <makeEmptyDirs>false</makeEmptyDirs>
+                  <patternSeparator>[, ]+</patternSeparator>
+                  <execCommand>rm -rf  /export/fesite/${JOB_NAME}/*
+mv /root/export/fesite/${JOB_NAME}/*.tar.gz /export/fesite/${JOB_NAME}
+cd  /export/fesite/${JOB_NAME}/
+tar -zxvf ${JOB_NAME}.tar.gz
+rm -rf *.tar.gz</execCommand>
+                  <execTimeout>120000</execTimeout>
+                  <usePty>false</usePty>
+                </jenkins.plugins.publish__over__ssh.BapSshTransfer>
+              </transfers>
+              <useWorkspaceInPromotion>false</useWorkspaceInPromotion>
+              <usePromotionTimestamp>false</usePromotionTimestamp>
+              <label class="jenkins.plugins.publish_over_ssh.BapSshPublisherLabel">
+                <label>dev</label>
+              </label>
+            </jenkins.plugins.publish__over__ssh.BapSshPublisher>
+          </publishers>
+          <continueOnError>false</continueOnError>
+          <failOnError>false</failOnError>
+          <alwaysPublishFromMaster>false</alwaysPublishFromMaster>
+          <hostConfigurationAccess class="jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin" reference="../.."/>
+          <paramPublish class="jenkins.plugins.publish_over_ssh.BapSshParamPublish">
+            <parameterName>SSH_PUBLISHERS</parameterName>
+          </paramPublish>
+        </delegate>
+      </delegate>
+    </jenkins.plugins.publish__over__ssh.BapSshBuilderPlugin>
+  </postbuilders>
+  <runPostStepsIfResult>
+    <name>FAILURE</name>
+    <ordinal>2</ordinal>
+    <color>RED</color>
+    <completeBuild>true</completeBuild>
+  </runPostStepsIfResult>
+</maven2-moduleset>
