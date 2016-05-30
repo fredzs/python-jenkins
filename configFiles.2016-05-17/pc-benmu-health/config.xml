@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?><maven2-moduleset plugin="maven-plugin@2.7.1">
+  <actions/>
+  <description>医疗官网js及css</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.25">
+      <autoRebuild>false</autoRebuild>
+      <rebuildDisabled>false</rebuildDisabled>
+    </com.sonyericsson.rebuild.RebuildSettings>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>7</daysToKeep>
+        <numToKeep>10</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>base_git_url</name>
+          <description>git url</description>
+          <defaultValue>http://192.168.1.3:8080/fe/pc-benmu-health.git</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>branch_name</name>
+          <description>分支号</description>
+          <defaultValue>dev_test01</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.4.0">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>${base_git_url}</url>
+        <credentialsId>c7a74331-bde1-4b97-b298-51686095172e</credentialsId>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>*/${branch_name}</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions>
+      <hudson.plugins.git.extensions.impl.CleanBeforeCheckout/>
+    </extensions>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <rootModule>
+    <groupId>com.saohuobang.web.platform</groupId>
+    <artifactId>pc-benmu-health</artifactId>
+  </rootModule>
+  <aggregatorStyleBuild>true</aggregatorStyleBuild>
+  <incrementalBuild>false</incrementalBuild>
+  <ignoreUpstremChanges>false</ignoreUpstremChanges>
+  <archivingDisabled>false</archivingDisabled>
+  <siteArchivingDisabled>false</siteArchivingDisabled>
+  <fingerprintingDisabled>false</fingerprintingDisabled>
+  <resolveDependencies>false</resolveDependencies>
+  <processPlugins>false</processPlugins>
+  <mavenValidationLevel>-1</mavenValidationLevel>
+  <runHeadless>false</runHeadless>
+  <disableTriggerDownstreamProjects>false</disableTriggerDownstreamProjects>
+  <blockTriggerWhenBuilding>true</blockTriggerWhenBuilding>
+  <settings class="jenkins.mvn.DefaultSettingsProvider"/>
+  <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+  <reporters/>
+  <publishers>
+    <org.korosoft.jenkins.plugin.rtp.RichTextPublisher plugin="rich-text-publisher-plugin@1.3">
+      <stableText>&lt;script&gt;
+var list=document.getElementsByTagName("tbody")[1];
+var length = list.getElementsByTagName("tr").length - 3;
+var startLine = 2;
+var i = 0;
+
+var buildId = ${ENV:BUILD_ID};
+var buildIdInt = parseInt(buildId);
+function callServer() {	
+	var xmlHttp;
+	if(window.ActiveXObject)
+        xmlHttp =new ActiveXObject("Microsoft.XMLHTTP");
+    else if(window.XMLHttpRequest)   
+        xmlHttp=new XMLHttpRequest();   
+	var url = document.URL + buildIdInt + "/api/xml?pretty=true&amp;tree=actions[parameters[*],causes[*]]";
+	
+	xmlHttp.open("GET",url,true);   
+	xmlHttp.onreadystatechange = function(){
+		if(xmlHttp.readyState==4 &amp;&amp; xmlHttp.status==200 &amp;&amp; i &lt; length) {
+			var branch_name = xmlHttp.responseXML.getElementsByTagName("parameter")[1].getElementsByTagName("value")[0].firstChild.nodeValue;
+			var user_name = xmlHttp.responseXML.getElementsByTagName("cause")[0].getElementsByTagName("userName")[0].firstChild.nodeValue;
+			var lineContent1, lineContent2;
+			if(branch_name=="trunk") {
+				lineContent1 = "　　trunk发布";
+				lineContent2 = ""
+			}
+			else {
+				lineContent1 = "　　branch_name=" + branch_name
+				lineContent2 = "　　btag=b_" + buildIdInt + "_" + user_name;
+			}
+			buildIdInt--;
+			var textnode1 =document.createTextNode(lineContent1);
+			var textnode2 =document.createTextNode(lineContent2);
+			var textnode3 =document.createTextNode("　");
+			var newDiv1=document.createElement("DIV");
+			var newDiv2=document.createElement("DIV");
+			var newDiv3=document.createElement("DIV");
+			newDiv1.appendChild(textnode1);
+			newDiv2.appendChild(textnode2);
+			newDiv3.appendChild(textnode3);
+			var newTd=document.createElement("TD");
+			newTd.appendChild(newDiv1);
+			newTd.appendChild(newDiv2);
+			newTd.appendChild(newDiv3);
+			
+			var newTr=document.createElement("TR");
+			newTr.appendChild(newTd);
+			list.insertBefore(newTr,list.children[i*2 + startLine]);
+			i++;
+			callServer();
+		}
+	};
+	xmlHttp.send(null);   
+}
+callServer();
+
+&lt;/script&gt;</stableText>
+      <unstableText/>
+      <failedText/>
+      <unstableAsStable>true</unstableAsStable>
+      <failedAsStable>true</failedAsStable>
+      <parserName>HTML</parserName>
+    </org.korosoft.jenkins.plugin.rtp.RichTextPublisher>
+  </publishers>
+  <buildWrappers>
+    <org.jenkinsci.plugins.builduser.BuildUser plugin="build-user-vars-plugin@1.4"/>
+  </buildWrappers>
+  <prebuilders>
+    <hudson.tasks.Shell>
+      <command>cd /root/.jenkins/jobs/${JOB_NAME}/workspace 
+rm -rf  *.tar.gz
+fekit min
+tar -zcvf ${JOB_NAME}.tar.gz ./prd/*
+echo "pack finished"</command>
+    </hudson.tasks.Shell>
+  </prebuilders>
+  <postbuilders>
+    <jenkins.plugins.publish__over__ssh.BapSshBuilderPlugin plugin="publish-over-ssh@1.12">
+      <delegate>
+        <consolePrefix>SSH: </consolePrefix>
+        <delegate>
+          <publishers>
+            <jenkins.plugins.publish__over__ssh.BapSshPublisher>
+              <configName>rpc_beta</configName>
+              <verbose>false</verbose>
+              <transfers>
+                <jenkins.plugins.publish__over__ssh.BapSshTransfer>
+                  <remoteDirectory>/export/fe/${JOB_NAME}</remoteDirectory>
+                  <sourceFiles>**/*.tar.gz</sourceFiles>
+                  <excludes/>
+                  <removePrefix/>
+                  <remoteDirectorySDF>false</remoteDirectorySDF>
+                  <flatten>false</flatten>
+                  <cleanRemote>false</cleanRemote>
+                  <noDefaultExcludes>false</noDefaultExcludes>
+                  <makeEmptyDirs>false</makeEmptyDirs>
+                  <patternSeparator>[, ]+</patternSeparator>
+                  <execCommand>rm -rf  /export/fe/${JOB_NAME}/*
+mv /root/export/fe/${JOB_NAME}/*.tar.gz /export/fe/${JOB_NAME}
+cd  /export/fe/${JOB_NAME}/
+tar -zxvf ${JOB_NAME}.tar.gz</execCommand>
+                  <execTimeout>120000</execTimeout>
+                  <usePty>false</usePty>
+                </jenkins.plugins.publish__over__ssh.BapSshTransfer>
+              </transfers>
+              <useWorkspaceInPromotion>false</useWorkspaceInPromotion>
+              <usePromotionTimestamp>false</usePromotionTimestamp>
+            </jenkins.plugins.publish__over__ssh.BapSshPublisher>
+          </publishers>
+          <continueOnError>false</continueOnError>
+          <failOnError>false</failOnError>
+          <alwaysPublishFromMaster>false</alwaysPublishFromMaster>
+          <hostConfigurationAccess class="jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin" reference="../.."/>
+        </delegate>
+      </delegate>
+    </jenkins.plugins.publish__over__ssh.BapSshBuilderPlugin>
+  </postbuilders>
+  <runPostStepsIfResult>
+    <name>SUCCESS</name>
+    <ordinal>0</ordinal>
+    <color>BLUE</color>
+    <completeBuild>true</completeBuild>
+  </runPostStepsIfResult>
+</maven2-moduleset>

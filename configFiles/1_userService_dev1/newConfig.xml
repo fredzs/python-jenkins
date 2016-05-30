@@ -1,7 +1,6 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<maven2-moduleset plugin="maven-plugin@2.7.1">
+<?xml version="1.0" encoding="UTF-8"?><maven2-moduleset plugin="maven-plugin@2.7.1">
   <actions/>
-  <description></description>
+  <description/>
   <keepDependencies>false</keepDependencies>
   <properties>
     <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.25">
@@ -20,12 +19,12 @@
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
           <name>base_git_url</name>
-          <description></description>
+          <description/>
           <defaultValue>http://git.benmu-health.org/benmu-health/rpc-parent.git</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>branch_name</name>
-          <description></description>
+          <description/>
           <defaultValue>dev_version_optimization</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
@@ -46,7 +45,7 @@
     </branches>
     <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
     <browser class="hudson.plugins.git.browser.AssemblaWeb">
-      <url></url>
+      <url/>
     </browser>
     <submoduleCfg class="list"/>
     <extensions/>
@@ -141,7 +140,7 @@ function callServer() {
 
 			if (found == 1)
 			{
-				lineContent3 = &quot;　　SSH_PUBLISHERS=&quot; + SSH_PUBLISHERS;
+				lineContent3 = &quot;　　环境=&quot; + SSH_PUBLISHERS;
 				var textnode3 =document.createTextNode(lineContent3);
 				var newDiv3=document.createElement(&quot;DIV&quot;);
 				newDiv3.appendChild(textnode3);
@@ -165,8 +164,8 @@ function callServer() {
 callServer();
 
 &lt;/script&gt;</stableText>
-      <unstableText></unstableText>
-      <failedText></failedText>
+      <unstableText/>
+      <failedText/>
       <unstableAsStable>false</unstableAsStable>
       <failedAsStable>false</failedAsStable>
       <parserName>HTML</parserName>
@@ -189,7 +188,7 @@ callServer();
                 <jenkins.plugins.publish__over__ssh.BapSshTransfer>
                   <remoteDirectory>/export/App</remoteDirectory>
                   <sourceFiles>userService/target/userService-assembly.tar.gz</sourceFiles>
-                  <excludes></excludes>
+                  <excludes/>
                   <removePrefix>userService/target</removePrefix>
                   <remoteDirectorySDF>false</remoteDirectorySDF>
                   <flatten>false</flatten>

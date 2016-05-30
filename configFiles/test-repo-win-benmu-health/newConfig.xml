@@ -1,18 +1,17 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<maven2-moduleset plugin="maven-plugin@2.7.1">
+<?xml version="1.0" encoding="UTF-8"?><maven2-moduleset plugin="maven-plugin@2.7.1">
   <actions/>
-  <description>自助机前端 js/css 静态文件&#xd;
-&lt;br/&gt;&#xd;
-域名：fe.benmu-health.com&#xd;
-&lt;br/&gt;&#xd;
-host：&#xd;
-&lt;br/&gt;&#xd;
-beta3	172.16.100.207&#xd;
-&lt;br/&gt;&#xd;
-beta2	172.16.100.160&#xd;
-&lt;br/&gt;	&#xd;
-beta1	172.16.100.158&#xd;
-&lt;br/&gt;	&#xd;
+  <description>自助机前端 js/css 静态文件&#13;
+&lt;br/&gt;&#13;
+域名：fe.benmu-health.com&#13;
+&lt;br/&gt;&#13;
+host：&#13;
+&lt;br/&gt;&#13;
+beta3	172.16.100.207&#13;
+&lt;br/&gt;&#13;
+beta2	172.16.100.160&#13;
+&lt;br/&gt;	&#13;
+beta1	172.16.100.158&#13;
+&lt;br/&gt;	&#13;
 dev		172.16.100.161</description>
   <keepDependencies>false</keepDependencies>
   <properties>
@@ -42,7 +41,7 @@ dev		172.16.100.161</description>
         </hudson.model.StringParameterDefinition>
         <hudson.model.ChoiceParameterDefinition>
           <name>SSH_PUBLISHERS</name>
-          <description></description>
+          <description/>
           <choices class="java.util.Arrays$ArrayList">
             <a class="string-array">
               <string>beta3</string>
@@ -65,7 +64,7 @@ dev		172.16.100.161</description>
         <hudson.model.StringParameterDefinition>
           <name>RTag</name>
           <description>选择要回滚的版本号</description>
-          <defaultValue></defaultValue>
+          <defaultValue/>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
@@ -178,7 +177,7 @@ function callServer() {
 
 			if (found == 1)
 			{
-				lineContent3 = &quot;　　SSH_PUBLISHERS=&quot; + SSH_PUBLISHERS;
+				lineContent3 = &quot;　　环境=&quot; + SSH_PUBLISHERS;
 				var textnode3 =document.createTextNode(lineContent3);
 				var newDiv3=document.createElement(&quot;DIV&quot;);
 				newDiv3.appendChild(textnode3);
@@ -202,8 +201,8 @@ function callServer() {
 callServer();
 
 &lt;/script&gt;</stableText>
-      <unstableText></unstableText>
-      <failedText></failedText>
+      <unstableText/>
+      <failedText/>
       <unstableAsStable>true</unstableAsStable>
       <failedAsStable>true</failedAsStable>
       <parserName>HTML</parserName>
@@ -232,25 +231,25 @@ branch_name=${branch_name}</properties>
       <command>cd /root/.jenkins/jobs/${JOB_NAME}/workspace 
 
 rm -rf  *.tar.gz
-echo &quot;release_type = ${release_type}&quot;
-if [ &quot;${release_type}l&quot; == &quot;rollbackl&quot; ]
+echo "release_type = ${release_type}"
+if [ "${release_type}l" == "rollbackl" ]
       then
          git checkout ${branch_name}
          git reset --hard ${RTag}
          git push -f origin ${branch_name}
-         echo &quot;rollback vertions is [&quot;${RTag}&quot;]&quot;
+         echo "rollback vertions is ["${RTag}"]"
 
 fi
 
 fekit min
 tar -zcvf ${JOB_NAME}.tar.gz ./prd/*
-echo &quot;pack finished -------- last vertion is [&quot;`cat ./.git/refs/remotes/origin/${branch_name}`&quot;]&quot;
+echo "pack finished -------- last vertion is ["`cat ./.git/refs/remotes/origin/${branch_name}`"]"
 
-tag=&quot;v&quot;${BUILD_TIMESTAMP}&quot;_RTag_b&quot;${BUILD_ID}
+tag="v"${BUILD_TIMESTAMP}"_RTag_b"${BUILD_ID}
 git tag ${tag}
 git push origin --tags
 
-echo &quot;rollback is [&quot;${RTag}&quot;] , new GitTag is [&quot;${tag}&quot;]&quot;
+echo "rollback is ["${RTag}"] , new GitTag is ["${tag}"]"
 #sh /usr/local/fekitConf/release_rollback.sh</command>
     </hudson.tasks.Shell>
   </prebuilders>
@@ -267,8 +266,8 @@ echo &quot;rollback is [&quot;${RTag}&quot;] , new GitTag is [&quot;${tag}&quot;
                 <jenkins.plugins.publish__over__ssh.BapSshTransfer>
                   <remoteDirectory>/export/fe/${JOB_NAME}</remoteDirectory>
                   <sourceFiles>**/*.tar.gz</sourceFiles>
-                  <excludes></excludes>
-                  <removePrefix></removePrefix>
+                  <excludes/>
+                  <removePrefix/>
                   <remoteDirectorySDF>false</remoteDirectorySDF>
                   <flatten>false</flatten>
                   <cleanRemote>false</cleanRemote>
@@ -296,8 +295,8 @@ tar -zxvf ${JOB_NAME}.tar.gz</execCommand>
                 <jenkins.plugins.publish__over__ssh.BapSshTransfer>
                   <remoteDirectory>/export/fe/${JOB_NAME}</remoteDirectory>
                   <sourceFiles>**/*.tar.gz</sourceFiles>
-                  <excludes></excludes>
-                  <removePrefix></removePrefix>
+                  <excludes/>
+                  <removePrefix/>
                   <remoteDirectorySDF>false</remoteDirectorySDF>
                   <flatten>false</flatten>
                   <cleanRemote>false</cleanRemote>
@@ -325,8 +324,8 @@ tar -zxvf ${JOB_NAME}.tar.gz</execCommand>
                 <jenkins.plugins.publish__over__ssh.BapSshTransfer>
                   <remoteDirectory>/export/fe/${JOB_NAME}</remoteDirectory>
                   <sourceFiles>**/*.tar.gz</sourceFiles>
-                  <excludes></excludes>
-                  <removePrefix></removePrefix>
+                  <excludes/>
+                  <removePrefix/>
                   <remoteDirectorySDF>false</remoteDirectorySDF>
                   <flatten>false</flatten>
                   <cleanRemote>false</cleanRemote>
@@ -354,8 +353,8 @@ tar -zxvf ${JOB_NAME}.tar.gz</execCommand>
                 <jenkins.plugins.publish__over__ssh.BapSshTransfer>
                   <remoteDirectory>/export/fe/${JOB_NAME}</remoteDirectory>
                   <sourceFiles>**/*.tar.gz</sourceFiles>
-                  <excludes></excludes>
-                  <removePrefix></removePrefix>
+                  <excludes/>
+                  <removePrefix/>
                   <remoteDirectorySDF>false</remoteDirectorySDF>
                   <flatten>false</flatten>
                   <cleanRemote>false</cleanRemote>

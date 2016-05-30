@@ -148,7 +148,7 @@ function callServer() {
 
 			if (found == 1)
 			{
-				lineContent3 = &quot;　　SSH_PUBLISHERS=&quot; + SSH_PUBLISHERS;
+				lineContent3 = &quot;　　环境=&quot; + SSH_PUBLISHERS;
 				var textnode3 =document.createTextNode(lineContent3);
 				var newDiv3=document.createElement(&quot;DIV&quot;);
 				newDiv3.appendChild(textnode3);

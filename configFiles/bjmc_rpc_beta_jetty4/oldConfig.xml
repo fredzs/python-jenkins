@@ -21,7 +21,7 @@
         <hudson.model.StringParameterDefinition>
           <name>base_git_url</name>
           <description></description>
-          <defaultValue>http://git.benmu-health.org/benmu-health/bjmc.git</defaultValue>
+          <defaultValue>http://git.benmu-health.org/zhangzhening/test.git</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>branch_name</name>
@@ -175,8 +175,14 @@ else
 	userName=${userName/userName\&quot;\:\&quot;/}
 	tag=&quot;btag-&quot;${userName}&quot;-&quot;${BUILD_TIMESTAMP}
 	git tag ${tag}
-    git push origin --tags
-fi</command>
+    git push origin ${tag}
+fi
+git checkout master 
+git pull
+git merge ${tag}
+git push origin master
+
+exit 1;</command>
     </hudson.tasks.Shell>
   </prebuilders>
   <postbuilders>

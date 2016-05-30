@@ -1,45 +1,44 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<maven2-moduleset plugin="maven-plugin@2.7.1">
+<?xml version="1.0" encoding="UTF-8"?><maven2-moduleset plugin="maven-plugin@2.7.1">
   <actions/>
-  <description>&lt;p&gt;&#xd;
-	医疗公众号js及css&#xd;
-&lt;/p&gt;&#xd;
-&lt;p&gt;&#xd;
-	&lt;br /&gt;&#xd;
-&lt;/p&gt;&#xd;
-&lt;p&gt;&#xd;
-	公众号-测试环境 &amp;nbsp;发布步骤：&#xd;
-&lt;/p&gt;&#xd;
-&lt;p&gt;&#xd;
-	1.先build本项目&#xd;
-&lt;/p&gt;&#xd;
-&lt;p&gt;&#xd;
-	&lt;span style=&quot;line-height:1.5;&quot;&gt;2.build &amp;nbsp;site 项目&amp;nbsp;&lt;/span&gt;&lt;a href=&quot;http://172.16.100.150:8085/view/%E5%89%8D%E7%AB%AF/job/m-benmu-health-site/&quot;&gt;http://172.16.100.150:8085/view/%E5%89%8D%E7%AB%AF/job/m-benmu-health-site/&lt;/a&gt;&#xd;
-&lt;/p&gt;&#xd;
-&lt;p&gt;&#xd;
-	3.build &amp;nbsp;百货jenkins &amp;nbsp;js和css项目 &lt;a href=&quot;http://117.121.26.70:8010/view/%E5%8C%BB%E7%96%97/job/m-benmu-health/&quot; target=&quot;_blank&quot;&gt;http://117.121.26.70:8010/view/%E5%8C%BB%E7%96%97/job/m-benmu-health/&lt;/a&gt; &#xd;
-&lt;/p&gt;&#xd;
-&lt;p&gt;&#xd;
-	&lt;br /&gt;&#xd;
-&lt;/p&gt;&#xd;
-&lt;p&gt;&#xd;
-	公众号-开发环境 &amp;nbsp;发布步骤：&#xd;
-&lt;/p&gt;&#xd;
-&lt;p&gt;&#xd;
-	&lt;br /&gt;&#xd;
-&lt;/p&gt;&#xd;
-&lt;p&gt;&#xd;
-	1.先build本项目&#xd;
-&lt;/p&gt;&#xd;
-&lt;p&gt;&#xd;
-	&lt;span style=&quot;line-height:1.5;&quot;&gt;2.build &amp;nbsp;site 项目&amp;nbsp;&lt;/span&gt;&lt;a href=&quot;http://172.16.100.150:8085/view/%E5%89%8D%E7%AB%AF/job/m-benmu-health-site/&quot;&gt;http://172.16.100.150:8085/view/%E5%89%8D%E7%AB%AF/job/m-benmu-health-site/&lt;/a&gt; &#xd;
-&lt;/p&gt;&#xd;
-不需要发第三步&#xd;
-&lt;p&gt;&#xd;
-	&lt;br /&gt;&#xd;
-&lt;/p&gt;&#xd;
-&lt;p&gt;&#xd;
-	&lt;br /&gt;&#xd;
+  <description>&lt;p&gt;&#13;
+	医疗公众号js及css&#13;
+&lt;/p&gt;&#13;
+&lt;p&gt;&#13;
+	&lt;br /&gt;&#13;
+&lt;/p&gt;&#13;
+&lt;p&gt;&#13;
+	公众号-测试环境 &amp;nbsp;发布步骤：&#13;
+&lt;/p&gt;&#13;
+&lt;p&gt;&#13;
+	1.先build本项目&#13;
+&lt;/p&gt;&#13;
+&lt;p&gt;&#13;
+	&lt;span style="line-height:1.5;"&gt;2.build &amp;nbsp;site 项目&amp;nbsp;&lt;/span&gt;&lt;a href="http://172.16.100.150:8085/view/%E5%89%8D%E7%AB%AF/job/m-benmu-health-site/"&gt;http://172.16.100.150:8085/view/%E5%89%8D%E7%AB%AF/job/m-benmu-health-site/&lt;/a&gt;&#13;
+&lt;/p&gt;&#13;
+&lt;p&gt;&#13;
+	3.build &amp;nbsp;百货jenkins &amp;nbsp;js和css项目 &lt;a href="http://117.121.26.70:8010/view/%E5%8C%BB%E7%96%97/job/m-benmu-health/" target="_blank"&gt;http://117.121.26.70:8010/view/%E5%8C%BB%E7%96%97/job/m-benmu-health/&lt;/a&gt; &#13;
+&lt;/p&gt;&#13;
+&lt;p&gt;&#13;
+	&lt;br /&gt;&#13;
+&lt;/p&gt;&#13;
+&lt;p&gt;&#13;
+	公众号-开发环境 &amp;nbsp;发布步骤：&#13;
+&lt;/p&gt;&#13;
+&lt;p&gt;&#13;
+	&lt;br /&gt;&#13;
+&lt;/p&gt;&#13;
+&lt;p&gt;&#13;
+	1.先build本项目&#13;
+&lt;/p&gt;&#13;
+&lt;p&gt;&#13;
+	&lt;span style="line-height:1.5;"&gt;2.build &amp;nbsp;site 项目&amp;nbsp;&lt;/span&gt;&lt;a href="http://172.16.100.150:8085/view/%E5%89%8D%E7%AB%AF/job/m-benmu-health-site/"&gt;http://172.16.100.150:8085/view/%E5%89%8D%E7%AB%AF/job/m-benmu-health-site/&lt;/a&gt; &#13;
+&lt;/p&gt;&#13;
+不需要发第三步&#13;
+&lt;p&gt;&#13;
+	&lt;br /&gt;&#13;
+&lt;/p&gt;&#13;
+&lt;p&gt;&#13;
+	&lt;br /&gt;&#13;
 &lt;/p&gt;</description>
   <keepDependencies>false</keepDependencies>
   <properties>
@@ -69,7 +68,7 @@
         </hudson.model.StringParameterDefinition>
         <hudson.model.ChoiceParameterDefinition>
           <name>SSH_PUBLISHERS</name>
-          <description></description>
+          <description/>
           <choices class="java.util.Arrays$ArrayList">
             <a class="string-array">
               <string>beta3</string>
@@ -188,7 +187,7 @@ function callServer() {
 
 			if (found == 1)
 			{
-				lineContent3 = &quot;　　SSH_PUBLISHERS=&quot; + SSH_PUBLISHERS;
+				lineContent3 = &quot;　　环境=&quot; + SSH_PUBLISHERS;
 				var textnode3 =document.createTextNode(lineContent3);
 				var newDiv3=document.createElement(&quot;DIV&quot;);
 				newDiv3.appendChild(textnode3);
@@ -212,8 +211,8 @@ function callServer() {
 callServer();
 
 &lt;/script&gt;</stableText>
-      <unstableText></unstableText>
-      <failedText></failedText>
+      <unstableText/>
+      <failedText/>
       <unstableAsStable>true</unstableAsStable>
       <failedAsStable>true</failedAsStable>
       <parserName>HTML</parserName>
@@ -224,7 +223,7 @@ callServer();
   </buildWrappers>
   <prebuilders>
     <hudson.tasks.Shell>
-      <command>if [ `echo ${branch_name}|egrep &apos;btag-|rtag-&apos;` ]
+      <command>if [ `echo ${branch_name}|egrep 'btag-|rtag-'` ]
 then 
 	tag=${branch_name}
     branchMd5=`git rev-parse tags/${branch_name}`
@@ -236,12 +235,12 @@ else
 	diffVer=`git merge-base origin/${branch_name} origin/master`
 	if [ ${baseVer} != ${diffVer} ]
 	then 
-    	echo &quot;error: ${branch_name} is out of date!!!please merge from master！&quot;
+    	echo "error: ${branch_name} is out of date!!!please merge from master！"
     	exit 1;
 	fi
-    userName=`curl -silent ${BUILD_URL}api/json|grep -iEo &apos;userName\&quot;:\&quot;\w*&apos;`
-	userName=${userName/userName\&quot;\:\&quot;/}
-	tag=&quot;btag-&quot;${userName}&quot;-&quot;${BUILD_TIMESTAMP}
+    userName=`curl -silent ${BUILD_URL}api/json|grep -iEo 'userName\":\"\w*'`
+	userName=${userName/userName\"\:\"/}
+	tag="btag-"${userName}"-"${BUILD_TIMESTAMP}
 	git tag ${tag}
     git push origin --tags
 fi
@@ -251,7 +250,7 @@ rm -rf  *.tar.gz
 fekit min
 tar -zcvf ${JOB_NAME}.tar.gz ./prd/*
 tar -zcvf base.tar.gz ./base/*
-echo &quot;pack finished&quot;</command>
+echo "pack finished"</command>
     </hudson.tasks.Shell>
   </prebuilders>
   <postbuilders>
@@ -267,8 +266,8 @@ echo &quot;pack finished&quot;</command>
                 <jenkins.plugins.publish__over__ssh.BapSshTransfer>
                   <remoteDirectory>/export/fe/${JOB_NAME}</remoteDirectory>
                   <sourceFiles>**/*.tar.gz</sourceFiles>
-                  <excludes></excludes>
-                  <removePrefix></removePrefix>
+                  <excludes/>
+                  <removePrefix/>
                   <remoteDirectorySDF>false</remoteDirectorySDF>
                   <flatten>false</flatten>
                   <cleanRemote>false</cleanRemote>
@@ -298,8 +297,8 @@ rm -rf *.tar.gz</execCommand>
                 <jenkins.plugins.publish__over__ssh.BapSshTransfer>
                   <remoteDirectory>/export/fe/${JOB_NAME}</remoteDirectory>
                   <sourceFiles>**/*.tar.gz</sourceFiles>
-                  <excludes></excludes>
-                  <removePrefix></removePrefix>
+                  <excludes/>
+                  <removePrefix/>
                   <remoteDirectorySDF>false</remoteDirectorySDF>
                   <flatten>false</flatten>
                   <cleanRemote>false</cleanRemote>
@@ -331,8 +330,8 @@ rm -rf *.tar.gz</execCommand>
                 <jenkins.plugins.publish__over__ssh.BapSshTransfer>
                   <remoteDirectory>/export/fe/${JOB_NAME}</remoteDirectory>
                   <sourceFiles>**/*.tar.gz</sourceFiles>
-                  <excludes></excludes>
-                  <removePrefix></removePrefix>
+                  <excludes/>
+                  <removePrefix/>
                   <remoteDirectorySDF>false</remoteDirectorySDF>
                   <flatten>false</flatten>
                   <cleanRemote>false</cleanRemote>
@@ -362,8 +361,8 @@ rm -rf *.tar.gz</execCommand>
                 <jenkins.plugins.publish__over__ssh.BapSshTransfer>
                   <remoteDirectory>/export/fe/${JOB_NAME}</remoteDirectory>
                   <sourceFiles>**/*.tar.gz</sourceFiles>
-                  <excludes></excludes>
-                  <removePrefix></removePrefix>
+                  <excludes/>
+                  <removePrefix/>
                   <remoteDirectorySDF>false</remoteDirectorySDF>
                   <flatten>false</flatten>
                   <cleanRemote>false</cleanRemote>

@@ -1,18 +1,17 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<maven2-moduleset plugin="maven-plugin@2.7.1">
+<?xml version="1.0" encoding="UTF-8"?><maven2-moduleset plugin="maven-plugin@2.7.1">
   <actions/>
-  <description>自助机前端 js/css 静态文件&#xd;
-&lt;br/&gt;&#xd;
-域名：fe.benmu-health.com&#xd;
-&lt;br/&gt;&#xd;
-host：&#xd;
-&lt;br/&gt;&#xd;
-beta3	172.16.100.207&#xd;
-&lt;br/&gt;&#xd;
-beta2	172.16.100.160&#xd;
-&lt;br/&gt;	&#xd;
-beta1	172.16.100.158&#xd;
-&lt;br/&gt;	&#xd;
+  <description>自助机前端 js/css 静态文件&#13;
+&lt;br/&gt;&#13;
+域名：fe.benmu-health.com&#13;
+&lt;br/&gt;&#13;
+host：&#13;
+&lt;br/&gt;&#13;
+beta3	172.16.100.207&#13;
+&lt;br/&gt;&#13;
+beta2	172.16.100.160&#13;
+&lt;br/&gt;	&#13;
+beta1	172.16.100.158&#13;
+&lt;br/&gt;	&#13;
 dev		172.16.100.161</description>
   <keepDependencies>false</keepDependencies>
   <properties>
@@ -42,7 +41,7 @@ dev		172.16.100.161</description>
         </hudson.model.StringParameterDefinition>
         <hudson.model.ChoiceParameterDefinition>
           <name>SSH_PUBLISHERS</name>
-          <description></description>
+          <description/>
           <choices class="java.util.Arrays$ArrayList">
             <a class="string-array">
               <string>beta3</string>
@@ -168,7 +167,7 @@ function callServer() {
 
 			if (found == 1)
 			{
-				lineContent3 = &quot;　　SSH_PUBLISHERS=&quot; + SSH_PUBLISHERS;
+				lineContent3 = &quot;　　环境=&quot; + SSH_PUBLISHERS;
 				var textnode3 =document.createTextNode(lineContent3);
 				var newDiv3=document.createElement(&quot;DIV&quot;);
 				newDiv3.appendChild(textnode3);
@@ -192,8 +191,8 @@ function callServer() {
 callServer();
 
 &lt;/script&gt;</stableText>
-      <unstableText></unstableText>
-      <failedText></failedText>
+      <unstableText/>
+      <failedText/>
       <unstableAsStable>true</unstableAsStable>
       <failedAsStable>true</failedAsStable>
       <parserName>HTML</parserName>
@@ -219,7 +218,7 @@ branch_name=${site_branch_name}</properties>
   </buildWrappers>
   <prebuilders>
     <hudson.tasks.Shell>
-      <command>if [ `echo ${branch_name}|egrep &apos;btag-|rtag-&apos;` ]
+      <command>if [ `echo ${branch_name}|egrep 'btag-|rtag-'` ]
 then 
 	tag=${branch_name}
     branchMd5=`git rev-parse tags/${branch_name}`
@@ -231,12 +230,12 @@ else
 	diffVer=`git merge-base origin/${branch_name} origin/master`
 	if [ ${baseVer} != ${diffVer} ]
 	then 
-    	echo &quot;error: ${branch_name} is out of date!!!please merge from master！&quot;
+    	echo "error: ${branch_name} is out of date!!!please merge from master！"
     	exit 1;
 	fi
-    userName=`curl -silent ${BUILD_URL}api/json|grep -iEo &apos;userName\&quot;:\&quot;\w*&apos;`
-	userName=${userName/userName\&quot;\:\&quot;/}
-	tag=&quot;btag-&quot;${userName}&quot;-&quot;${BUILD_TIMESTAMP}
+    userName=`curl -silent ${BUILD_URL}api/json|grep -iEo 'userName\":\"\w*'`
+	userName=${userName/userName\"\:\"/}
+	tag="btag-"${userName}"-"${BUILD_TIMESTAMP}
 	git tag ${tag}
     git push origin --tags
 fi
@@ -246,7 +245,7 @@ rm -rf  *.tar.gz
 fekit pack
 mv dev prd
 tar -zcvf ${JOB_NAME}.tar.gz ./prd/*
-echo &quot;pack finished&quot;</command>
+echo "pack finished"</command>
     </hudson.tasks.Shell>
   </prebuilders>
   <postbuilders>
@@ -262,8 +261,8 @@ echo &quot;pack finished&quot;</command>
                 <jenkins.plugins.publish__over__ssh.BapSshTransfer>
                   <remoteDirectory>/export/fe/${JOB_NAME}</remoteDirectory>
                   <sourceFiles>**/*.tar.gz</sourceFiles>
-                  <excludes></excludes>
-                  <removePrefix></removePrefix>
+                  <excludes/>
+                  <removePrefix/>
                   <remoteDirectorySDF>false</remoteDirectorySDF>
                   <flatten>false</flatten>
                   <cleanRemote>false</cleanRemote>
@@ -291,8 +290,8 @@ tar -zxvf ${JOB_NAME}.tar.gz</execCommand>
                 <jenkins.plugins.publish__over__ssh.BapSshTransfer>
                   <remoteDirectory>/export/fe/${JOB_NAME}</remoteDirectory>
                   <sourceFiles>**/*.tar.gz</sourceFiles>
-                  <excludes></excludes>
-                  <removePrefix></removePrefix>
+                  <excludes/>
+                  <removePrefix/>
                   <remoteDirectorySDF>false</remoteDirectorySDF>
                   <flatten>false</flatten>
                   <cleanRemote>false</cleanRemote>
@@ -320,8 +319,8 @@ tar -zxvf ${JOB_NAME}.tar.gz</execCommand>
                 <jenkins.plugins.publish__over__ssh.BapSshTransfer>
                   <remoteDirectory>/export/fe/${JOB_NAME}</remoteDirectory>
                   <sourceFiles>**/*.tar.gz</sourceFiles>
-                  <excludes></excludes>
-                  <removePrefix></removePrefix>
+                  <excludes/>
+                  <removePrefix/>
                   <remoteDirectorySDF>false</remoteDirectorySDF>
                   <flatten>false</flatten>
                   <cleanRemote>false</cleanRemote>
@@ -349,8 +348,8 @@ tar -zxvf ${JOB_NAME}.tar.gz</execCommand>
                 <jenkins.plugins.publish__over__ssh.BapSshTransfer>
                   <remoteDirectory>/export/fe/${JOB_NAME}</remoteDirectory>
                   <sourceFiles>**/*.tar.gz</sourceFiles>
-                  <excludes></excludes>
-                  <removePrefix></removePrefix>
+                  <excludes/>
+                  <removePrefix/>
                   <remoteDirectorySDF>false</remoteDirectorySDF>
                   <flatten>false</flatten>
                   <cleanRemote>false</cleanRemote>

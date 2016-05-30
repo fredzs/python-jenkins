@@ -1,18 +1,17 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<maven2-moduleset plugin="maven-plugin@2.7.1">
+<?xml version="1.0" encoding="UTF-8"?><maven2-moduleset plugin="maven-plugin@2.7.1">
   <actions/>
-  <description>自助机前端 js/css 静态文件&#xd;
-&lt;br/&gt;&#xd;
-域名：fe.benmu-health.com&#xd;
-&lt;br/&gt;&#xd;
-host：&#xd;
-&lt;br/&gt;&#xd;
-beta3	172.16.100.207&#xd;
-&lt;br/&gt;&#xd;
-beta2	172.16.100.160&#xd;
-&lt;br/&gt;	&#xd;
-beta1	172.16.100.158&#xd;
-&lt;br/&gt;	&#xd;
+  <description>自助机前端 js/css 静态文件&#13;
+&lt;br/&gt;&#13;
+域名：fe.benmu-health.com&#13;
+&lt;br/&gt;&#13;
+host：&#13;
+&lt;br/&gt;&#13;
+beta3	172.16.100.207&#13;
+&lt;br/&gt;&#13;
+beta2	172.16.100.160&#13;
+&lt;br/&gt;	&#13;
+beta1	172.16.100.158&#13;
+&lt;br/&gt;	&#13;
 dev		172.16.100.161</description>
   <keepDependencies>false</keepDependencies>
   <properties>
@@ -42,7 +41,7 @@ dev		172.16.100.161</description>
         </hudson.model.StringParameterDefinition>
         <hudson.model.ChoiceParameterDefinition>
           <name>SSH_PUBLISHERS</name>
-          <description></description>
+          <description/>
           <choices class="java.util.Arrays$ArrayList">
             <a class="string-array">
               <string>beta3</string>
@@ -65,7 +64,7 @@ dev		172.16.100.161</description>
         <hudson.model.StringParameterDefinition>
           <name>RTag</name>
           <description>选择要回滚的版本号</description>
-          <defaultValue></defaultValue>
+          <defaultValue/>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
@@ -117,8 +116,8 @@ dev		172.16.100.161</description>
   <publishers>
     <org.korosoft.jenkins.plugin.rtp.RichTextPublisher plugin="rich-text-publisher-plugin@1.3">
       <stableText>&lt;script&gt;
-var list=document.getElementsByTagName(&quot;tbody&quot;)[1];
-var length = list.getElementsByTagName(&quot;tr&quot;).length - 3;
+var list=document.getElementsByTagName("tbody")[1];
+var length = list.getElementsByTagName("tr").length - 3;
 var startLine = 2;
 var i = 0;
 
@@ -127,41 +126,70 @@ var buildIdInt = parseInt(buildId);
 function callServer() {	
 	var xmlHttp;
 	if(window.ActiveXObject)
-        xmlHttp =new ActiveXObject(&quot;Microsoft.XMLHTTP&quot;);
+        xmlHttp =new ActiveXObject("Microsoft.XMLHTTP");
     else if(window.XMLHttpRequest)   
         xmlHttp=new XMLHttpRequest();   
-	var url = document.URL + buildIdInt + &quot;/api/xml?pretty=true&amp;tree=actions[parameters[*],causes[*]]&quot;;
+	var baseUrl = document.URL
+    var url = baseUrl.substring(0, baseUrl.lastIndexOf("/") + 1) + buildIdInt + "/api/xml?pretty=true&amp;tree=actions[parameters[*],causes[*]]";
 	
-	xmlHttp.open(&quot;GET&quot;,url,true);   
+	xmlHttp.open("GET",url,true);   
 	xmlHttp.onreadystatechange = function(){
 		if(xmlHttp.readyState==4 &amp;&amp; xmlHttp.status==200 &amp;&amp; i &lt; length) {
-			var branch_name = xmlHttp.responseXML.getElementsByTagName(&quot;parameter&quot;)[1].getElementsByTagName(&quot;value&quot;)[0].firstChild.nodeValue;
-			var user_name = xmlHttp.responseXML.getElementsByTagName(&quot;cause&quot;)[0].getElementsByTagName(&quot;userName&quot;)[0].firstChild.nodeValue;
-			var lineContent1, lineContent2;
-			if(branch_name==&quot;trunk&quot;) {
-				lineContent1 = &quot;　　trunk发布&quot;;
-				lineContent2 = &quot;&quot;
+			var branch_name, SSH_PUBLISHERS, user_name;
+			var para = xmlHttp.responseXML.getElementsByTagName("parameter");
+			var varCount = para.length;
+			var found = 0;
+			for (var j = 0; j &lt; varCount; j++)
+			{
+				var name = para[j].getElementsByTagName("name")[0].firstChild.nodeValue;
+				if (name == "branch_name")
+				{
+					branch_name = para[j].getElementsByTagName("value")[0].firstChild.nodeValue;
+				}
+				else if (name == "SSH_PUBLISHERS")
+				{
+					found = 1;
+					SSH_PUBLISHERS = para[j].getElementsByTagName("value")[0].firstChild.nodeValue;
+				}
+			}
+			user_name = xmlHttp.responseXML.getElementsByTagName("cause")[0].getElementsByTagName("userName")[0].firstChild.nodeValue;
+			var lineContent1 = "", lineContent2 = "", lineContent3 = "";
+			if(branch_name == "trunk") {
+				lineContent1 = "　　trunk发布";
 			}
 			else {
-				lineContent1 = &quot;　　branch_name=&quot; + branch_name
-				lineContent2 = &quot;　　btag=b_&quot; + buildIdInt + &quot;_&quot; + user_name;
+				lineContent1 = "　　branch_name=" + branch_name
+				lineContent2 = "　　btag=b_" + buildIdInt + "_" + user_name;
 			}
+
 			buildIdInt--;
+			var newTd=document.createElement("TD");
+
 			var textnode1 =document.createTextNode(lineContent1);
-			var textnode2 =document.createTextNode(lineContent2);
-			var textnode3 =document.createTextNode(&quot;　&quot;);
-			var newDiv1=document.createElement(&quot;DIV&quot;);
-			var newDiv2=document.createElement(&quot;DIV&quot;);
-			var newDiv3=document.createElement(&quot;DIV&quot;);
+			var newDiv1=document.createElement("DIV");
 			newDiv1.appendChild(textnode1);
-			newDiv2.appendChild(textnode2);
-			newDiv3.appendChild(textnode3);
-			var newTd=document.createElement(&quot;TD&quot;);
 			newTd.appendChild(newDiv1);
+
+			var textnode2 =document.createTextNode(lineContent2);
+			var newDiv2=document.createElement("DIV");
+			newDiv2.appendChild(textnode2);
 			newTd.appendChild(newDiv2);
-			newTd.appendChild(newDiv3);
+
+			if (found == 1)
+			{
+				lineContent3 = "　　SSH_PUBLISHERS=" + SSH_PUBLISHERS;
+				var textnode3 =document.createTextNode(lineContent3);
+				var newDiv3=document.createElement("DIV");
+				newDiv3.appendChild(textnode3);
+				newTd.appendChild(newDiv3);
+			}
+
+			var textnode4 =document.createTextNode("　");
+			var newDiv4=document.createElement("DIV");
+			newDiv4.appendChild(textnode4);
+			newTd.appendChild(newDiv4);
 			
-			var newTr=document.createElement(&quot;TR&quot;);
+			var newTr=document.createElement("TR");
 			newTr.appendChild(newTd);
 			list.insertBefore(newTr,list.children[i*2 + startLine]);
 			i++;
@@ -172,13 +200,9 @@ function callServer() {
 }
 callServer();
 
-&lt;/script&gt;
-&lt;p&gt;${ENV:BUILD_TAG}:&lt;/p&gt;
-&lt;p&gt;release_type is : ${release_type}&lt;/p&gt;
-&lt;p&gt;rollback tag is : ${RTag}&lt;/p&gt;
-&lt;p&gt;last RTag is : v${ENV:BUILD_TIMESTAMP}&lt;script&gt;//var date =new Date,y = date.getFullYear(),M=date.getMonth() + 1,d=date.getDate();M&lt;10&amp;&amp;(M=&apos;0&apos;+M);document.write(y+&apos;&apos;+M+d)&lt;/script&gt;_RTag_b${ENV:BUILD_ID}&lt;/p&gt;</stableText>
-      <unstableText></unstableText>
-      <failedText></failedText>
+&lt;/script&gt;</stableText>
+      <unstableText/>
+      <failedText/>
       <unstableAsStable>true</unstableAsStable>
       <failedAsStable>true</failedAsStable>
       <parserName>HTML</parserName>
@@ -207,25 +231,25 @@ branch_name=${branch_name}</properties>
       <command>cd /root/.jenkins/jobs/${JOB_NAME}/workspace 
 
 rm -rf  *.tar.gz
-echo &quot;release_type = ${release_type}&quot;
-if [ &quot;${release_type}l&quot; == &quot;rollbackl&quot; ]
+echo "release_type = ${release_type}"
+if [ "${release_type}l" == "rollbackl" ]
       then
          git checkout ${branch_name}
          git reset --hard ${RTag}
          git push -f origin ${branch_name}
-         echo &quot;rollback vertions is [&quot;${RTag}&quot;]&quot;
+         echo "rollback vertions is ["${RTag}"]"
 
 fi
 
 fekit min
 tar -zcvf ${JOB_NAME}.tar.gz ./prd/*
-echo &quot;pack finished -------- last vertion is [&quot;`cat ./.git/refs/remotes/origin/${branch_name}`&quot;]&quot;
+echo "pack finished -------- last vertion is ["`cat ./.git/refs/remotes/origin/${branch_name}`"]"
 
-tag=&quot;v&quot;${BUILD_TIMESTAMP}&quot;_RTag_b&quot;${BUILD_ID}
+tag="v"${BUILD_TIMESTAMP}"_RTag_b"${BUILD_ID}
 git tag ${tag}
 git push origin --tags
 
-echo &quot;rollback is [&quot;${RTag}&quot;] , new GitTag is [&quot;${tag}&quot;]&quot;
+echo "rollback is ["${RTag}"] , new GitTag is ["${tag}"]"
 #sh /usr/local/fekitConf/release_rollback.sh</command>
     </hudson.tasks.Shell>
   </prebuilders>
@@ -242,8 +266,8 @@ echo &quot;rollback is [&quot;${RTag}&quot;] , new GitTag is [&quot;${tag}&quot;
                 <jenkins.plugins.publish__over__ssh.BapSshTransfer>
                   <remoteDirectory>/export/fe/${JOB_NAME}</remoteDirectory>
                   <sourceFiles>**/*.tar.gz</sourceFiles>
-                  <excludes></excludes>
-                  <removePrefix></removePrefix>
+                  <excludes/>
+                  <removePrefix/>
                   <remoteDirectorySDF>false</remoteDirectorySDF>
                   <flatten>false</flatten>
                   <cleanRemote>false</cleanRemote>
@@ -271,8 +295,8 @@ tar -zxvf ${JOB_NAME}.tar.gz</execCommand>
                 <jenkins.plugins.publish__over__ssh.BapSshTransfer>
                   <remoteDirectory>/export/fe/${JOB_NAME}</remoteDirectory>
                   <sourceFiles>**/*.tar.gz</sourceFiles>
-                  <excludes></excludes>
-                  <removePrefix></removePrefix>
+                  <excludes/>
+                  <removePrefix/>
                   <remoteDirectorySDF>false</remoteDirectorySDF>
                   <flatten>false</flatten>
                   <cleanRemote>false</cleanRemote>
@@ -300,8 +324,8 @@ tar -zxvf ${JOB_NAME}.tar.gz</execCommand>
                 <jenkins.plugins.publish__over__ssh.BapSshTransfer>
                   <remoteDirectory>/export/fe/${JOB_NAME}</remoteDirectory>
                   <sourceFiles>**/*.tar.gz</sourceFiles>
-                  <excludes></excludes>
-                  <removePrefix></removePrefix>
+                  <excludes/>
+                  <removePrefix/>
                   <remoteDirectorySDF>false</remoteDirectorySDF>
                   <flatten>false</flatten>
                   <cleanRemote>false</cleanRemote>
@@ -329,8 +353,8 @@ tar -zxvf ${JOB_NAME}.tar.gz</execCommand>
                 <jenkins.plugins.publish__over__ssh.BapSshTransfer>
                   <remoteDirectory>/export/fe/${JOB_NAME}</remoteDirectory>
                   <sourceFiles>**/*.tar.gz</sourceFiles>
-                  <excludes></excludes>
-                  <removePrefix></removePrefix>
+                  <excludes/>
+                  <removePrefix/>
                   <remoteDirectorySDF>false</remoteDirectorySDF>
                   <flatten>false</flatten>
                   <cleanRemote>false</cleanRemote>

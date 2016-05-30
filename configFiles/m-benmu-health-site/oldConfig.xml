@@ -39,6 +39,7 @@
           <description></description>
           <choices class="java.util.Arrays$ArrayList">
             <a class="string-array">
+              <string>//fe.benmu-health.com/m-benmu-health</string>
               <string>//fetest1.benmu-health.org/m-benmu-health</string>
               <string>//fetest2.benmu-health.org/m-benmu-health</string>
               <string>//fetest3.benmu-health.org/m-benmu-health</string>
@@ -119,36 +120,65 @@ function callServer() {
         xmlHttp =new ActiveXObject(&quot;Microsoft.XMLHTTP&quot;);
     else if(window.XMLHttpRequest)   
         xmlHttp=new XMLHttpRequest();   
-	var url = document.URL + buildIdInt + &quot;/api/xml?pretty=true&amp;tree=actions[parameters[*],causes[*]]&quot;;
+	var baseUrl = document.URL
+    var url = baseUrl.substring(0, baseUrl.lastIndexOf(&quot;/&quot;) + 1) + buildIdInt + &quot;/api/xml?pretty=true&amp;tree=actions[parameters[*],causes[*]]&quot;;
 	
 	xmlHttp.open(&quot;GET&quot;,url,true);   
 	xmlHttp.onreadystatechange = function(){
 		if(xmlHttp.readyState==4 &amp;&amp; xmlHttp.status==200 &amp;&amp; i &lt; length) {
-			var branch_name = xmlHttp.responseXML.getElementsByTagName(&quot;parameter&quot;)[1].getElementsByTagName(&quot;value&quot;)[0].firstChild.nodeValue;
-			var user_name = xmlHttp.responseXML.getElementsByTagName(&quot;cause&quot;)[0].getElementsByTagName(&quot;userName&quot;)[0].firstChild.nodeValue;
-			var lineContent1, lineContent2;
-			if(branch_name==&quot;trunk&quot;) {
+			var branch_name, SSH_PUBLISHERS, user_name;
+			var para = xmlHttp.responseXML.getElementsByTagName(&quot;parameter&quot;);
+			var varCount = para.length;
+			var found = 0;
+			for (var j = 0; j &lt; varCount; j++)
+			{
+				var name = para[j].getElementsByTagName(&quot;name&quot;)[0].firstChild.nodeValue;
+				if (name == &quot;branch_name&quot;)
+				{
+					branch_name = para[j].getElementsByTagName(&quot;value&quot;)[0].firstChild.nodeValue;
+				}
+				else if (name == &quot;SSH_PUBLISHERS&quot;)
+				{
+					found = 1;
+					SSH_PUBLISHERS = para[j].getElementsByTagName(&quot;value&quot;)[0].firstChild.nodeValue;
+				}
+			}
+			user_name = xmlHttp.responseXML.getElementsByTagName(&quot;cause&quot;)[0].getElementsByTagName(&quot;userName&quot;)[0].firstChild.nodeValue;
+			var lineContent1 = &quot;&quot;, lineContent2 = &quot;&quot;, lineContent3 = &quot;&quot;;
+			if(branch_name == &quot;trunk&quot;) {
 				lineContent1 = &quot;　　trunk发布&quot;;
-				lineContent2 = &quot;&quot;
 			}
 			else {
 				lineContent1 = &quot;　　branch_name=&quot; + branch_name
 				lineContent2 = &quot;　　btag=b_&quot; + buildIdInt + &quot;_&quot; + user_name;
 			}
+
 			buildIdInt--;
-			var textnode1 =document.createTextNode(lineContent1);
-			var textnode2 =document.createTextNode(lineContent2);
-			var textnode3 =document.createTextNode(&quot;　&quot;);
-			var newDiv1=document.createElement(&quot;DIV&quot;);
-			var newDiv2=document.createElement(&quot;DIV&quot;);
-			var newDiv3=document.createElement(&quot;DIV&quot;);
-			newDiv1.appendChild(textnode1);
-			newDiv2.appendChild(textnode2);
-			newDiv3.appendChild(textnode3);
 			var newTd=document.createElement(&quot;TD&quot;);
+
+			var textnode1 =document.createTextNode(lineContent1);
+			var newDiv1=document.createElement(&quot;DIV&quot;);
+			newDiv1.appendChild(textnode1);
 			newTd.appendChild(newDiv1);
+
+			var textnode2 =document.createTextNode(lineContent2);
+			var newDiv2=document.createElement(&quot;DIV&quot;);
+			newDiv2.appendChild(textnode2);
 			newTd.appendChild(newDiv2);
-			newTd.appendChild(newDiv3);
+
+			if (found == 1)
+			{
+				lineContent3 = &quot;　　SSH_PUBLISHERS=&quot; + SSH_PUBLISHERS;
+				var textnode3 =document.createTextNode(lineContent3);
+				var newDiv3=document.createElement(&quot;DIV&quot;);
+				newDiv3.appendChild(textnode3);
+				newTd.appendChild(newDiv3);
+			}
+
+			var textnode4 =document.createTextNode(&quot;　&quot;);
+			var newDiv4=document.createElement(&quot;DIV&quot;);
+			newDiv4.appendChild(textnode4);
+			newTd.appendChild(newDiv4);
 			
 			var newTr=document.createElement(&quot;TR&quot;);
 			newTr.appendChild(newTd);

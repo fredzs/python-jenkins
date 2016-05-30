@@ -1,7 +1,6 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<maven2-moduleset plugin="maven-plugin@2.7.1">
+<?xml version="1.0" encoding="UTF-8"?><maven2-moduleset plugin="maven-plugin@2.7.1">
   <actions/>
-  <description></description>
+  <description/>
   <keepDependencies>false</keepDependencies>
   <properties>
     <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.25">
@@ -20,12 +19,12 @@
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
           <name>base_git_url</name>
-          <description></description>
+          <description/>
           <defaultValue>http://git.benmu-health.org/benmu-health/rpc-parent.git</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>branch_name</name>
-          <description></description>
+          <description/>
           <defaultValue>dev_version_optimization</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
@@ -77,8 +76,8 @@
   <publishers>
     <org.korosoft.jenkins.plugin.rtp.RichTextPublisher plugin="rich-text-publisher-plugin@1.3">
       <stableText>&lt;script&gt;
-var list=document.getElementsByTagName(&quot;tbody&quot;)[1];
-var length = list.getElementsByTagName(&quot;tr&quot;).length - 3;
+var list=document.getElementsByTagName("tbody")[1];
+var length = list.getElementsByTagName("tr").length - 3;
 var startLine = 2;
 var i = 0;
 
@@ -87,41 +86,70 @@ var buildIdInt = parseInt(buildId);
 function callServer() {	
 	var xmlHttp;
 	if(window.ActiveXObject)
-        xmlHttp =new ActiveXObject(&quot;Microsoft.XMLHTTP&quot;);
+        xmlHttp =new ActiveXObject("Microsoft.XMLHTTP");
     else if(window.XMLHttpRequest)   
         xmlHttp=new XMLHttpRequest();   
-	var url = document.URL + buildIdInt + &quot;/api/xml?pretty=true&amp;tree=actions[parameters[*],causes[*]]&quot;;
+	var baseUrl = document.URL
+    var url = baseUrl.substring(0, baseUrl.lastIndexOf("/") + 1) + buildIdInt + "/api/xml?pretty=true&amp;tree=actions[parameters[*],causes[*]]";
 	
-	xmlHttp.open(&quot;GET&quot;,url,true);   
+	xmlHttp.open("GET",url,true);   
 	xmlHttp.onreadystatechange = function(){
 		if(xmlHttp.readyState==4 &amp;&amp; xmlHttp.status==200 &amp;&amp; i &lt; length) {
-			var branch_name = xmlHttp.responseXML.getElementsByTagName(&quot;parameter&quot;)[1].getElementsByTagName(&quot;value&quot;)[0].firstChild.nodeValue;
-			var user_name = xmlHttp.responseXML.getElementsByTagName(&quot;cause&quot;)[0].getElementsByTagName(&quot;userName&quot;)[0].firstChild.nodeValue;
-			var lineContent1, lineContent2;
-			if(branch_name==&quot;trunk&quot;) {
-				lineContent1 = &quot;　　trunk发布&quot;;
-				lineContent2 = &quot;&quot;
+			var branch_name, SSH_PUBLISHERS, user_name;
+			var para = xmlHttp.responseXML.getElementsByTagName("parameter");
+			var varCount = para.length;
+			var found = 0;
+			for (var j = 0; j &lt; varCount; j++)
+			{
+				var name = para[j].getElementsByTagName("name")[0].firstChild.nodeValue;
+				if (name == "branch_name")
+				{
+					branch_name = para[j].getElementsByTagName("value")[0].firstChild.nodeValue;
+				}
+				else if (name == "SSH_PUBLISHERS")
+				{
+					found = 1;
+					SSH_PUBLISHERS = para[j].getElementsByTagName("value")[0].firstChild.nodeValue;
+				}
+			}
+			user_name = xmlHttp.responseXML.getElementsByTagName("cause")[0].getElementsByTagName("userName")[0].firstChild.nodeValue;
+			var lineContent1 = "", lineContent2 = "", lineContent3 = "";
+			if(branch_name == "trunk") {
+				lineContent1 = "　　trunk发布";
 			}
 			else {
-				lineContent1 = &quot;　　branch_name=&quot; + branch_name
-				lineContent2 = &quot;　　btag=b_&quot; + buildIdInt + &quot;_&quot; + user_name;
+				lineContent1 = "　　branch_name=" + branch_name
+				lineContent2 = "　　btag=b_" + buildIdInt + "_" + user_name;
 			}
+
 			buildIdInt--;
+			var newTd=document.createElement("TD");
+
 			var textnode1 =document.createTextNode(lineContent1);
-			var textnode2 =document.createTextNode(lineContent2);
-			var textnode3 =document.createTextNode(&quot;　&quot;);
-			var newDiv1=document.createElement(&quot;DIV&quot;);
-			var newDiv2=document.createElement(&quot;DIV&quot;);
-			var newDiv3=document.createElement(&quot;DIV&quot;);
+			var newDiv1=document.createElement("DIV");
 			newDiv1.appendChild(textnode1);
-			newDiv2.appendChild(textnode2);
-			newDiv3.appendChild(textnode3);
-			var newTd=document.createElement(&quot;TD&quot;);
 			newTd.appendChild(newDiv1);
+
+			var textnode2 =document.createTextNode(lineContent2);
+			var newDiv2=document.createElement("DIV");
+			newDiv2.appendChild(textnode2);
 			newTd.appendChild(newDiv2);
-			newTd.appendChild(newDiv3);
+
+			if (found == 1)
+			{
+				lineContent3 = "　　SSH_PUBLISHERS=" + SSH_PUBLISHERS;
+				var textnode3 =document.createTextNode(lineContent3);
+				var newDiv3=document.createElement("DIV");
+				newDiv3.appendChild(textnode3);
+				newTd.appendChild(newDiv3);
+			}
+
+			var textnode4 =document.createTextNode("　");
+			var newDiv4=document.createElement("DIV");
+			newDiv4.appendChild(textnode4);
+			newTd.appendChild(newDiv4);
 			
-			var newTr=document.createElement(&quot;TR&quot;);
+			var newTr=document.createElement("TR");
 			newTr.appendChild(newTd);
 			list.insertBefore(newTr,list.children[i*2 + startLine]);
 			i++;
@@ -133,8 +161,8 @@ function callServer() {
 callServer();
 
 &lt;/script&gt;</stableText>
-      <unstableText></unstableText>
-      <failedText></failedText>
+      <unstableText/>
+      <failedText/>
       <unstableAsStable>true</unstableAsStable>
       <failedAsStable>true</failedAsStable>
       <parserName>HTML</parserName>
@@ -157,7 +185,7 @@ callServer();
                 <jenkins.plugins.publish__over__ssh.BapSshTransfer>
                   <remoteDirectory>/export/App</remoteDirectory>
                   <sourceFiles>regService/target/regService-assembly.tar.gz</sourceFiles>
-                  <excludes></excludes>
+                  <excludes/>
                   <removePrefix>regService/target</removePrefix>
                   <remoteDirectorySDF>false</remoteDirectorySDF>
                   <flatten>false</flatten>
